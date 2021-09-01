@@ -109,7 +109,7 @@ class Torrent
             $meta = ['announce' => $meta];
         }
         if ($this->build($data, $piece_length * 1024)) {
-            $this->touch();
+            $this->{'creation date'} = time();
         } else {
             $meta = array_merge($meta, $this->decode($data));
         }
@@ -196,6 +196,19 @@ class Torrent
         return is_null($timestamp) ?
             isset($this->{'creation date'}) ? $this->{'creation date'} : null :
             $this->touch($this->{'creation date'} = (int) $timestamp);
+    }
+	
+	/** Getter and setter of torrent created by
+     *
+     * @param null|string author (optional, if omitted it's a getter)
+     *
+     * @return string|null author or null if not set
+     */
+    public function created_by($author = null)
+    {
+        return is_null($author) ?
+            isset($this->{'created by'}) ? $this->{'created by'} : null :
+            $this->touch($this->{'created by'} = (string) $author);
     }
 
     /** Getter and setter of torrent comment
@@ -729,9 +742,6 @@ class Torrent
      */
     protected function touch($void = null)
     {
-        $this->{'created by'}    = 'Torrent RW PHP Class - http://github.com/adriengibrat/torrent-rw';
-        $this->{'creation date'} = time();
-
         return $void;
     }
 
