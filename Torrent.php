@@ -723,15 +723,25 @@ class Torrent
     {
         if (is_null($data)) {
             return false;
-        } elseif (is_array($data) && self::is_list($data)) {
-            return $this->info = $this->files($data, $piece_length);
-        } elseif (is_dir($data)) {
-            return $this->info = $this->folder($data, $piece_length);
-        } elseif ((is_file($data) || self::url_exists($data)) && !self::is_torrent($data)) {
-            return $this->info = $this->file($data, $piece_length);
-        } else {
-            return false;
         }
+
+        if (is_array($data) && self::is_list($data)) {
+            return $this->info = $this->files($data, $piece_length);
+        }
+
+        try {
+            if (is_dir($data)) {
+                return $this->info = $this->folder($data, $piece_length);
+            }
+        } catch (\Throwable) {
+            // Ignore
+        }
+
+        if ((is_file($data) || self::url_exists($data)) && !self::is_torrent($data)) {
+            return $this->info = $this->file($data, $piece_length);
+        }
+
+        return false;
     }
 
     /** Set torrent creator and creation date
