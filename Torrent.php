@@ -68,6 +68,7 @@ namespace TorrentRW;
  *
  * @version  0.0.3
  */
+#[\AllowDynamicProperties]
 class Torrent
 {
     /**
@@ -990,7 +991,7 @@ class Torrent
             $size /= 1024;
         }
 
-        return round($size, $precision) . ' ' . ($next ? prev($units) : end($units));
+        return round((float) $size, $precision) . ' ' . ($next ? prev($units) : end($units));
     }
 
     /** Helper to return filesize (even bigger than 2Gb -linux only- and distant files size)
